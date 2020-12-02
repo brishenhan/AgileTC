@@ -1,9 +1,14 @@
 package com.xiaoju.framework.controller;
 
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * 重定向
+ *
+ * @author didi
+ * @date 2020/9/3
+ */
 @Controller
 public class WebController {
     @RequestMapping("/")
