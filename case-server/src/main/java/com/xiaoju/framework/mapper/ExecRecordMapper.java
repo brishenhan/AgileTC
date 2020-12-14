@@ -30,7 +30,7 @@ public interface ExecRecordMapper {
      * @param id 执行任务id
      * @return 执行记录实体
      */
-    ExecRecord findOne(Long id);
+    ExecRecord selectOne(Long id);
 
     /**
      * 根据用例id获取所属的所有执行任务

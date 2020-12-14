@@ -7,7 +7,7 @@ import lombok.Data;
 import org.springframework.util.StringUtils;
 
 /**
- * 文件夹删除请求体
+ * 文件夹 删除
  *
  * @author didi
  * @date 2020/9/11

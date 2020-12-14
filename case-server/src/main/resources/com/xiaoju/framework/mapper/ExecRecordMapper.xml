@@ -167,13 +167,13 @@
     </trim>
   </insert>
 
-  <select id="findOne" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+  <select id="selectOne" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from exec_record
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id}
   </select>
 
   <update id="updateById" parameterType="com.xiaoju.framework.entity.persistent.ExecRecord">

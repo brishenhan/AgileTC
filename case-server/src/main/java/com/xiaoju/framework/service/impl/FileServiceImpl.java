@@ -94,7 +94,7 @@ public class FileServiceImpl implements FileService {
         ISheet defSheet = workbook.getPrimarySheet();
         ITopic rootTopic = defSheet.getRootTopic();
 
-        TestCase testCase = caseMapper.findOne(id);
+        TestCase testCase = caseMapper.selectOne(id);
         if (testCase == null || StringUtils.isEmpty(testCase.getCaseContent())) {
             throw new CaseServerException("用例不存在或者content为空", StatusCode.FILE_EXPORT_ERROR);
         }

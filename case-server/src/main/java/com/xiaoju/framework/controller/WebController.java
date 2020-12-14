@@ -27,12 +27,12 @@ public class WebController {
     }
 
     @RequestMapping(value ="/caseManager/1/*/*/*")
-    public String tc_record(){
+    public String tcRecord(){
         return "index";
     }
 
     @RequestMapping(value ="/caseManager/1/*/*")
-    public String tc_case(){
+    public String tcCase(){
         return "index";
     }
 

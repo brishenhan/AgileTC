@@ -1,7 +1,9 @@
 package com.xiaoju.framework.constants;
 
 /**
- * @author hcy
+ * 文件夹相关的常量
+ *
+ * @author didi
  * @date 2020/9/8
  */
 public class BizConstant {

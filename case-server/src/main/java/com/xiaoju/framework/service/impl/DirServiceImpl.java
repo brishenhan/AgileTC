@@ -112,7 +112,7 @@ public class DirServiceImpl implements DirService {
 
     @Override
     public DirNodeDto getDirTree(Long productLineId, Integer channel) {
-        Biz dbBiz = bizMapper.findOne(productLineId, channel);
+        Biz dbBiz = bizMapper.selectOne(productLineId, channel);
         // 如果有，那么就直接返回
         if (dbBiz != null) {
             return JSONObject.parseObject(dbBiz.getContent(), DirNodeDto.class);

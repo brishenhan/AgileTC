@@ -18,7 +18,7 @@
     <result column="requirement_id" jdbcType="VARCHAR" property="requirementId" />
     <result column="smk_case_id" jdbcType="BIGINT" property="smkCaseId" />
     <result column="channel" jdbcType="INTEGER" property="channel" />
-    <result column="bizId" jdbcType="VARCHAR" property="biz_id" />
+    <result column="biz_id" jdbcType="VARCHAR" property="bizId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xiaoju.framework.entity.persistent.TestCase">
     <result column="case_content" jdbcType="LONGVARCHAR" property="caseContent" />
@@ -150,13 +150,11 @@
     </trim>
   </insert>
 
-  <select id="findOne" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+  <select id="selectOne" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
+    <include refid="Base_Column_List" /> , <include refid="Blob_Column_List" />
     from test_case
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id}
   </select>
 
   <update id="update" parameterType="com.xiaoju.framework.entity.persistent.TestCase">
@@ -232,13 +230,8 @@
     <if test="creator != null and creator != ''">
       and creator = #{creator,jdbcType=VARCHAR}
     </if>
-    <if test="requirementId != null and requirementId.size() > 0">
-      and
-      (
-      <foreach collection="requirementId" item="reqId" separator="or">
-        FIND_IN_SET(#{reqId},requirement_id)
-      </foreach>
-      )
+    <if test="requirementId != null and requirementId != ''">
+      and requirement_id = #{requirementId,jdbcType=VARCHAR}
     </if>
     <if test="beginTime != null">
       and gmt_created &gt;= #{beginTime,jdbcType=TIMESTAMP}
@@ -270,7 +263,7 @@
     </where>
   </select>
 
-  <select id="selectCaseIdsByLineId" parameterType="java.lang.Long" resultType="String">
+  <select id="findCaseIdsInBiz" resultType="String">
     select id from test_case
     where is_delete = 0 and product_line_id = #{productLineId} and case_type = 0 and channel = #{channel}
   </select>

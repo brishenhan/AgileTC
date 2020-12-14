@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author hcy
  * @date 2020/10/28
- * @see CaseController#getCountByCondition(com.xiaoju.framework.entity.request.cases.CaseConditionReq) 参数获取来源
+ * @see CaseController#getCountByCondition(java.lang.Long, java.lang.String[], java.lang.String[])
  */
 @Data
 public class PickCaseDto {

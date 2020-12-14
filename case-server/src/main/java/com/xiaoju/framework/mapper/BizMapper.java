@@ -36,7 +36,7 @@ public interface BizMapper {
      * @param channel 渠道
      * @return 文件夹实体
      */
-    Biz findOne(Long productLineId, Integer channel);
+    Biz selectOne(Long productLineId, Integer channel);
 
     /**
      * 更新文件夹树内容

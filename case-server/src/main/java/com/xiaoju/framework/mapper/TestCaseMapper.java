@@ -32,7 +32,7 @@ public interface TestCaseMapper {
      * @param id 用例id
      * @return 用例实体
      */
-    TestCase findOne(Long id);
+    TestCase selectOne(Long id);
 
     /**
      * 修改用例实体
@@ -67,7 +67,7 @@ public interface TestCaseMapper {
                           @Param("caseIds") List<Long> caseIds,
                           @Param("title") String title,
                           @Param("creator") String creator,
-                          @Param("requirementId") List<Long> requirementId,
+                          @Param("requirementId") String requirementId,
                           @Param("beginTime") Date beginTime,
                           @Param("endTime") Date endTime,
                           @Param("channel") Integer channel,

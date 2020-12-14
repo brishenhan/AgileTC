@@ -3,7 +3,7 @@
 <mapper namespace="com.xiaoju.framework.mapper.BizMapper">
   <resultMap id="BaseResultMap" type="com.xiaoju.framework.entity.persistent.Biz">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="product_line_id" jdbcType="BIGINT" property="product_line_id" />
+    <result column="product_line_id" jdbcType="BIGINT" property="productLineId" />
     <result column="channel" jdbcType="INTEGER" property="channel"/>
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
@@ -20,12 +20,12 @@
     content
   </sql>
 
-  <select id="findOne" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+  <select id="selectOne" resultMap="ResultMapWithBLOBs">
     select
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from biz where line_id = #{productLineId} and is_delete=0 and channel = #{channel};
+    from biz where product_line_id = #{productLineId, jdbcType=BIGINT} and is_delete=0 and channel = #{channel, jdbcType=INTEGER};
   </select>
 
   <insert id="insert" parameterType="com.xiaoju.framework.entity.persistent.Biz">
@@ -89,10 +89,10 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <update id="updateContent" parameterType="java.lang.Long">
+  <update id="updateContent">
     update biz
-    set content = #{content}
-    where product_line_id = #{productLineId} and channel = #{channel}
+    set content = #{content, jdbcType=LONGVARCHAR}
+    where product_line_id = #{productLineId, jdbcType=BIGINT} and channel = #{channel, jdbcType=INTEGER}
   </update>
 
 </mapper>

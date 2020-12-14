@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 用例实际在websocket中传递的内容
  *
- * @author hcy
+ * @author didi
  * @date 2020/8/13
  */
 @Data

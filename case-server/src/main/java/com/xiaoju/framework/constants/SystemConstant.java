@@ -3,7 +3,7 @@ package com.xiaoju.framework.constants;
 /**
  * 系统常量
  *
- * @author hcy
+ * @author didi
  * @date 2020/8/12
  */
 public class SystemConstant {

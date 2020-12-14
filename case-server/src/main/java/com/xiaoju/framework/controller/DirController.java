@@ -70,7 +70,7 @@ public class DirController {
      * @param request 请求体
      * @return 响应体
      */
-    @PostMapping(value = "/update")
+    @PostMapping(value = "/rename")
     public Response<?> renameDir(@RequestBody DirRenameReq request) {
         request.validate();
         try {

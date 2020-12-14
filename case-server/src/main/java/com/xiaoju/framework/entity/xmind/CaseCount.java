@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * 用例计算成功、失败、阻塞、总计的结构体
  *
- * @author hcy
+ * @author didi
  * @date 2020/8/17
  */
 @Data
@@ -38,13 +38,19 @@ public class CaseCount {
     private int total;
 
     /**
-     * 便利时把操作记录拉进来
+     * 遍历时把操作记录拉进来
      */
     private JSONObject progress = new JSONObject();
 
     public void addProgress(String id, Object progressObj) {
         if (progressObj != null) {
             progress.put(id, progressObj);
+        }
+    }
+
+    public void addAllProgress(JSONObject obj) {
+        if (obj != null) {
+            progress.putAll(obj);
         }
     }
 

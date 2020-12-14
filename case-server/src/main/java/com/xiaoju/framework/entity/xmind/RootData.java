@@ -5,6 +5,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
+ * 用例的json单元
+ *
  * @author hcy
  * @date 2020/8/13
  */

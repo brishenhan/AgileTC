@@ -5,7 +5,7 @@ import com.xiaoju.framework.entity.exception.CaseServerException;
 import com.xiaoju.framework.entity.request.record.RecordAddReq;
 import com.xiaoju.framework.entity.request.record.RecordDeleteReq;
 import com.xiaoju.framework.entity.request.record.RecordUpdateReq;
-import com.xiaoju.framework.entity.request.record.RecordWsClearReq;
+import com.xiaoju.framework.entity.request.ws.RecordWsClearReq;
 import com.xiaoju.framework.entity.response.controller.Response;
 import com.xiaoju.framework.service.RecordService;
 import org.slf4j.Logger;

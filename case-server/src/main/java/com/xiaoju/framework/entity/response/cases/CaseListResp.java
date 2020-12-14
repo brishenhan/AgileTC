@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 需求下的所有用例的列表
+ * 用例的列表
  *
  * @author didi
  * @date 2020/8/18

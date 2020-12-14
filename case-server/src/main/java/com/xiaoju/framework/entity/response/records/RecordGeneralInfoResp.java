@@ -5,6 +5,8 @@ import lombok.Data;
 import java.util.Date;
 
 /**
+ * 脑图 - 执行任务上方的概览信息
+ *
  * @author hcy
  * @date 2020/10/28
  */
@@ -14,6 +16,8 @@ public class RecordGeneralInfoResp {
     private Long id;
 
     private Long caseId;
+
+    private String title;
 
     /**
      * 预计周期

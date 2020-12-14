@@ -1,10 +1,10 @@
-package com.xiaoju.framework.entity.request.record;
+package com.xiaoju.framework.entity.request.ws;
 
 import com.xiaoju.framework.entity.request.ParamValidate;import lombok.Data;
 import org.springframework.util.StringUtils;
 
 /**
- * 清理用例的执行记录
+ * 任务 脑图当中清理执行记录的按钮
  *
  * @author hcy
  * @date 2020/10/29

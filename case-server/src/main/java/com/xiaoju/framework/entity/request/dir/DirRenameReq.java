@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 import static com.xiaoju.framework.constants.BizConstant.UNSORTED_BIZ_ID;
 
 /**
- * 文件夹重命名请求
+ * 文件夹 重命名
  *
  * @author didi
  * @date 2020/9/11

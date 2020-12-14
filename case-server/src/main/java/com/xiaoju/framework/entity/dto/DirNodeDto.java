@@ -1,5 +1,6 @@
 package com.xiaoju.framework.entity.dto;
 
+import com.xiaoju.framework.service.impl.RecordServiceImpl;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -8,12 +9,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author ldl
- * @version: 1.0.0
- * @description:
- * @date 2020/9/9 3:45 下午
+ * 文件夹节点转换体
+ *
+ * @author didi
+ * @date 2020/10/28
+ * @see RecordServiceImpl#getData(com.xiaoju.framework.entity.dto.MergeCaseDto)
  */
-
 @Data
 public class DirNodeDto {
 

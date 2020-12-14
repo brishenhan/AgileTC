@@ -12,7 +12,7 @@ import com.xiaoju.framework.entity.persistent.ExecRecord;
 import com.xiaoju.framework.entity.persistent.TestCase;
 import com.xiaoju.framework.entity.request.record.RecordAddReq;
 import com.xiaoju.framework.entity.request.record.RecordUpdateReq;
-import com.xiaoju.framework.entity.request.record.RecordWsClearReq;
+import com.xiaoju.framework.entity.request.ws.RecordWsClearReq;
 import com.xiaoju.framework.entity.response.records.RecordGeneralInfoResp;
 import com.xiaoju.framework.entity.response.records.RecordListResp;
 import com.xiaoju.framework.entity.xmind.IntCount;
@@ -61,7 +61,7 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public List<RecordListResp> getListByCaseId(Long caseId) {
         List<RecordListResp> res = new ArrayList<>();
-        TestCase testCase = caseMapper.findOne(caseId);
+        TestCase testCase = caseMapper.selectOne(caseId);
         if (testCase == null) {
             throw new CaseServerException("用例不存在", StatusCode.NOT_FOUND_ENTITY);
         }
@@ -75,12 +75,12 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public RecordGeneralInfoResp getGeneralInfo(Long recordId) {
-        ExecRecord record = recordMapper.findOne(recordId);
+        ExecRecord record = recordMapper.selectOne(recordId);
         if (record == null) {
             throw new CaseServerException("操作记录不存在", StatusCode.NOT_FOUND_ENTITY);
         }
 
-        TestCase testCase = caseMapper.findOne(record.getCaseId());
+        TestCase testCase = caseMapper.selectOne(record.getCaseId());
         JSONObject merged = getData(new MergeCaseDto(testCase.getId(), record.getChooseContent(), record.getCaseContent(), record.getEnv()));
 
         // 开始构建响应体
@@ -107,7 +107,7 @@ public class RecordServiceImpl implements RecordService {
     public void editRecord(RecordUpdateReq req) {
         // 需要注意的是 圈选用例的对content的修改与脑图patch的修改不是同一频段
         // 所以这里修改的是圈选用例的话 一定要将websocket的redis清空
-        ExecRecord record = recordMapper.findOne(req.getId());
+        ExecRecord record = recordMapper.selectOne(req.getId());
         if (record == null) {
             throw new CaseServerException("对应执行任务不存在", StatusCode.NOT_FOUND_ENTITY);
         }
@@ -141,7 +141,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public RecordWsDto getWsRecord(Long recordId) {
-        ExecRecord record = recordMapper.findOne(recordId);
+        ExecRecord record = recordMapper.selectOne(recordId);
         if (record == null) {
             throw new CaseServerException("执行任务不存在", StatusCode.NOT_FOUND_ENTITY);
         }
@@ -166,7 +166,7 @@ public class RecordServiceImpl implements RecordService {
         if (StringUtils.isEmpty(record.getModifier())) {
             throw new CaseServerException("修改人为空", StatusCode.INTERNAL_ERROR);
         }
-        ExecRecord dbRecord = recordMapper.findOne(record.getId());
+        ExecRecord dbRecord = recordMapper.selectOne(record.getId());
         BeanUtils.copyProperties(record, dbRecord);
         recordMapper.update(dbRecord);
     }
@@ -174,7 +174,7 @@ public class RecordServiceImpl implements RecordService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ExecRecord wsClearRecord(RecordWsClearReq req) {
-        ExecRecord record = recordMapper.findOne(req.getId());
+        ExecRecord record = recordMapper.selectOne(req.getId());
         record.setCaseContent(EMPTY_STR);
         record.setSuccessCount(0);
         record.setPassCount(0);
@@ -278,6 +278,7 @@ public class RecordServiceImpl implements RecordService {
     private RecordGeneralInfoResp buildGeneralInfoResp(ExecRecord record, TestCase testCase, JSONObject merged) {
         RecordGeneralInfoResp resp = new RecordGeneralInfoResp();
         resp.setId(record.getId());
+        resp.setTitle(record.getTitle());
         resp.setCaseId(testCase.getId());
         resp.setRequirementIds(testCase.getRequirementId());
         resp.setExpectStartTime(
@@ -308,7 +309,7 @@ public class RecordServiceImpl implements RecordService {
      * @return 响应体
      */
     public List<String> getWsEditingCount(ExecRecord record) {
-        TestCase testCase = caseMapper.findOne(record.getCaseId());
+        TestCase testCase = caseMapper.selectOne(record.getCaseId());
         if (testCase == null) {
             throw new CaseServerException("当前用例不存在", StatusCode.INTERNAL_ERROR);
         }
@@ -320,9 +321,9 @@ public class RecordServiceImpl implements RecordService {
      * ☆将当前record的操作记录和用例集的内容进行merge，返回合并后的内容
      */
     public JSONObject getData(MergeCaseDto dto) {
-        String caseContent = caseMapper.findOne(dto.getCaseId()).getCaseContent();
+        String caseContent = caseMapper.selectOne(dto.getCaseId()).getCaseContent();
         JSONObject content = JSON.parseObject(caseContent);
-        // oe测有圈选条件
+        // 如果不是全部圈选的圈选条件
         if (!StringUtils.isEmpty(dto.getChooseContent()) && !dto.getChooseContent().contains(OE_PICK_ALL)) {
             PickCaseDto pickCaseDto = JSON.parseObject(dto.getChooseContent(), PickCaseDto.class);
 
@@ -340,7 +341,7 @@ public class RecordServiceImpl implements RecordService {
                 TreeUtil.getChosenCase(caseRoot, new HashSet<>(pickCaseDto.getResource()), "resource");
             }
         } else {
-            // done侧有环境选择
+            // 给未来的环境选择做好打算...
             if (EnvEnum.TestQaEnv.getValue().equals(dto.getEnv()) || EnvEnum.TestRdEnv.getValue().equals(dto.getEnv())) {
                 // 似乎是想用BFS做广度遍历
                 JSONObject caseRoot = content.getJSONObject("root");

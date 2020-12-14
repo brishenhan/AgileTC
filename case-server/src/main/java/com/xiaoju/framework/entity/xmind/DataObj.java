@@ -3,7 +3,9 @@ package com.xiaoju.framework.entity.xmind;
 import lombok.Data;
 
 /**
- * @author hcy
+ * 任务的json单元
+ *
+ * @author didi
  * @date 2020/8/13
  */
 @Data

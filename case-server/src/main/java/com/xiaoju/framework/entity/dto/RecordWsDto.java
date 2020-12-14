@@ -5,6 +5,8 @@ import lombok.Data;
 import java.util.Date;
 
 /**
+ * 任务的一个简单转换体
+ *
  * @author hcy
  * @date 2020/10/29
  */

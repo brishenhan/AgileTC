@@ -65,7 +65,9 @@ public class TreeUtil {
             if (currNode.getProgress() != null) {
                 int num = 0;
                 for (RootData childNode : childNodes) {
-                    num += caseDFS(childNode).getTotal();
+                    CaseCount cc = caseDFS(childNode);
+                    num += cc.getTotal();
+                    currCount.addAllProgress(cc.getProgress());
                 }
                 switch (ProgressEnum.findEnumByProgress(currNode.getProgress())) {
                     case BLOCK:

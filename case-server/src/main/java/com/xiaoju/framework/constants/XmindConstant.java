@@ -3,7 +3,7 @@ package com.xiaoju.framework.constants;
 /**
  * Xmind相关的常量
  *
- * @author hcy
+ * @author didi
  * @date 2020/8/13
  */
 public class XmindConstant {

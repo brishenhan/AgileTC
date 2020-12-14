@@ -85,7 +85,7 @@ public class CaseServiceImpl implements CaseService {
         PageHelper.startPage(request.getPageNum(), request.getPageSize());
         // select * from test_case where case_id in (request.getCaseIds()) [and ...any other condition];
         List<TestCase> caseList = caseMapper.search(request.getCaseType(), caseIds, request.getTitle(),
-                request.getCreator(), request.getReqIds(), beginTime, endTime, request.getChannel(), request.getLineId());
+                request.getCreator(), request.getRequirementId(), beginTime, endTime, request.getChannel(), request.getLineId());
 
         List<RecordNumDto> recordNumDtos = recordMapper.getRecordNumByCaseIds(caseIds);
         Map<Long, Integer> recordMap = recordNumDtos.stream().collect(Collectors.toMap(RecordNumDto::getCaseId, RecordNumDto::getRecordNum));
@@ -99,7 +99,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public CaseDetailResp getCaseDetail(Long caseId) {
-        TestCase testCase = caseMapper.findOne(caseId);
+        TestCase testCase = caseMapper.selectOne(caseId);
         if (testCase == null) {
             throw new CaseServerException("用例不存在", StatusCode.INTERNAL_ERROR);
         }
@@ -126,7 +126,7 @@ public class CaseServiceImpl implements CaseService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public DirTreeResp updateCase(CaseEditReq request) {
-        TestCase testCase = caseMapper.findOne(request.getId());
+        TestCase testCase = caseMapper.selectOne(request.getId());
         if (testCase == null) {
             throw new CaseServerException("用例不存在", StatusCode.NOT_FOUND_ENTITY);
         }
@@ -149,7 +149,7 @@ public class CaseServiceImpl implements CaseService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public DirTreeResp deleteCase(Long caseId) {
-        TestCase testCase = caseMapper.findOne(caseId);
+        TestCase testCase = caseMapper.selectOne(caseId);
         testCase.setIsDelete(IS_DELETE);
 
         // 删除所有操作记录
@@ -175,16 +175,13 @@ public class CaseServiceImpl implements CaseService {
             return list;
         }
 
-        return names
-                .stream()
-                .map(name -> {
+        return names.stream().map(name -> {
                     PersonResp person = new PersonResp();
                     person.setStaffNamePY(name);
                     // 这里目前是扔出去了英文名，有需要可以自己加
                     person.setStaffNameCN(name);
                     return person;
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
     }
 
 
@@ -192,7 +189,7 @@ public class CaseServiceImpl implements CaseService {
     public CaseConditionResp getCountByCondition(CaseConditionReq req) {
         CaseConditionResp res = new CaseConditionResp();
 
-        TestCase testCase = caseMapper.findOne(req.getCaseId());
+        TestCase testCase = caseMapper.selectOne(req.getCaseId());
         JSONObject content = JSONObject.parseObject(testCase.getCaseContent());
         JSONObject caseRoot = content.getJSONObject("root");
 
@@ -223,7 +220,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public CaseGeneralInfoResp getCaseGeneralInfo(Long caseId) {
-        TestCase testCase = caseMapper.findOne(caseId);
+        TestCase testCase = caseMapper.selectOne(caseId);
         if (testCase == null) {
             throw new CaseServerException("用例不存在", StatusCode.NOT_FOUND_ENTITY);
         }
@@ -238,10 +235,10 @@ public class CaseServiceImpl implements CaseService {
     @Override
     public void wsSave(WsSaveReq req) {
         // 这里触发保存record
-        if (StringUtils.isEmpty(req.getRecordId())) {
+        if (!StringUtils.isEmpty(req.getRecordId())) {
             RecordWsDto dto = recordService.getWsRecord(req.getRecordId());
             // 看看是不是有重合的执行人
-            List<String> names = Arrays.asList(dto.getExecutors().split(COMMA));
+            List<String> names = Arrays.stream(dto.getExecutors().split(COMMA)).filter(e->!StringUtils.isEmpty(e)).collect(Collectors.toList());
             long count = names.stream().filter(e -> e.equals(req.getModifier())).count();
             String executors;
             if (count > 0) {
@@ -255,6 +252,8 @@ public class CaseServiceImpl implements CaseService {
 
             JSONObject jsonObject = TreeUtil.parse(req.getCaseContent());
             ExecRecord record = new ExecRecord();
+            record.setId(req.getRecordId());
+            record.setCaseId(req.getId());
             record.setModifier(req.getModifier());
             record.setGmtModified(new Date(System.currentTimeMillis()));
             record.setCaseContent(jsonObject.getJSONObject("progress").toJSONString());
@@ -268,7 +267,7 @@ public class CaseServiceImpl implements CaseService {
             recordService.modifyRecord(record);
         } else {
             // 这里触发保存testcase
-            TestCase testCase = caseMapper.findOne(req.getId());
+            TestCase testCase = caseMapper.selectOne(req.getId());
             testCase.setCaseContent(req.getCaseContent());
             testCase.setModifier(req.getModifier());
             caseMapper.update(testCase);
@@ -381,7 +380,7 @@ public class CaseServiceImpl implements CaseService {
         String content = request.getCaseContent();
         // 如果是复制
         if (request.getId() != null) {
-            TestCase testCase = caseMapper.findOne(request.getId());
+            TestCase testCase = caseMapper.selectOne(request.getId());
             if (testCase == null) {
                 throw new CaseServerException("用例不存在", StatusCode.NOT_FOUND_ENTITY);
             }
@@ -445,7 +444,7 @@ public class CaseServiceImpl implements CaseService {
      * @param tree 树
      */
     public void updateBiz(TestCase testCase, DirNodeDto tree) {
-        Biz biz = bizMapper.findOne(testCase.getProductLineId(), testCase.getChannel());
+        Biz biz = bizMapper.selectOne(testCase.getProductLineId(), testCase.getChannel());
         biz.setContent(JSON.toJSONString(tree));
         biz.setGmtModified(new Date());
         bizMapper.update(biz);

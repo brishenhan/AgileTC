@@ -1,7 +1,10 @@
 package com.xiaoju.framework.entity.xmind;
 
 /**
- * Created by didi on 2019/10/10.
+ * 数字封装
+ *
+ * @author didi
+ * @date 2019/10/10
  */
 public class IntCount {
     int value;

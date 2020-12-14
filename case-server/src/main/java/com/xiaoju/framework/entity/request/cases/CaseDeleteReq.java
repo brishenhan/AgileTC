@@ -4,7 +4,7 @@ import com.xiaoju.framework.entity.request.ParamValidate;
 import lombok.Data;
 
 /**
- * 逻辑删除某条用例集
+ * 用例 逻辑删除
  *
  * @author hcy
  * @date 2020/9/7

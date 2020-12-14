@@ -3,7 +3,7 @@ package com.xiaoju.framework.entity.response.cases;
 import lombok.Data;
 
 /**
- * 查看用例上方的概览信息(不包括content)
+ * 脑图-查看用例上方的概览信息(不包括content)
  *
  * @author hcy
  * @date 2020/10/22
